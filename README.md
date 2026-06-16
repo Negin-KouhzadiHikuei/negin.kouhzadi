@@ -25,8 +25,11 @@ The raw global frame was masked down strictly to the 'Armenia' territory. Incomp
 ## 🧠 Technical Defense: Evolution of the AI Brain
 
 ### Phase 1: The Single-Variable Limitation (Underfitting)
-Initially, training the model exclusively on `energy_per_gdp` failed. Because the true nature of power grid usage is multi-dimensional, the AI was too simple to learn the pattern, producing a static, flat baseline.
-![Baseline Single Variable Model](./baseline_underfitting.png)
+Initially, training the model exclusively on a single feature failed. Because the true nature of power grid usage is multi-dimensional, the AI was too simple to learn the pattern, producing a static, flat baseline.
+
+<p align="center">
+  <img src="./baseline_underfitting.png" alt="Baseline Single Variable Model" width="750">
+</p>
 
 ### Phase 2: Multi-Variable Matrix Expansion (Successful Learning)
 By reshaping the input into a 2D matrix ($X$) containing `year`, `population`, and `gdp`, the model solved a multi-dimensional linear equation:
@@ -34,11 +37,16 @@ By reshaping the input into a 2D matrix ($X$) containing `year`, `population`, a
 $$\text{Energy per Capita} = (w_1 \times \text{Year}) + (w_2 \times \text{Population}) + (w_3 \times \text{GDP}) + b$$
 
 The trained AI line tightly tracked the actual historical dips, peaks, and market transitions of the region, achieving high predictive convergence.
-![Multi Variable AI Model](./multivariable_prediction.png)
+
+<p align="center">
+  <img src="./multivariable_prediction.png" alt="Multi Variable AI Model" width="750">
+</p>
+
 ---
 
 ## 🚀 How to Run the Infrastructure
-1. Ensure your virtual environment is active.
-2. Install dependencies:
+
+1. Ensure your localized Python virtual environment is active.
+2. Install the necessary data science dependencies:
    ```bash
    pip install pandas numpy matplotlib scikit-learn
