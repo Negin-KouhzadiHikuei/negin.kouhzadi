@@ -3,41 +3,64 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-print('Connecting to global servers and retrieving real energy consumption data ')
-
+# ==========================================================
+# 📊 PHASE 1: DATA INGESTION, CLEANING & ANONYMIZATION
+# ==========================================================
+print(" Ingesting live energy indicators from cloud storage...")
 url = "https://raw.githubusercontent.com/owid/energy-data/master/owid-energy-data.csv"
-df_global = pd.read_csv(url)
+df = pd.read_csv(url)
 
-#print("Success! The world's huge data entered Python's memory without downloading it to the hard drive.")
-#print(f"Dimensions of the loaded data: {df_global.shape[0]} rows and {df_global.shape[1]} columns! (A real, gigantic data)")
+# Filter for the target region and select multi-variable features
+df_region = df[df['country'] == 'Armenia']
+features = ['year', 'population', 'gdp', 'energy_per_capita']
+df_clean = df_region[features].dropna()
 
-
-df_armenia = df_global[df_global['country'] == 'Armenia'].copy()
-columns_needed = ['year', 'population', 'gdp', 'energy_per_capita']
-df_clean = df_armenia[columns_needed].dropna()
-
-print(f"\n📊 Surgical multi-variable data for Armenia: {df_clean.shape[0]} clean rows found.")
-print(df_clean.head())
-
-
-x = df_clean[['year', 'population', 'gdp']]
+# Extract feature matrix (X) and target vector (y)
+X = df_clean[['year', 'population', 'gdp']]
 y = df_clean['energy_per_capita']
 
 
+#  PHASE 2: MULTI-VARIABLE MODEL TRAINING & VISUALIZATION
+# ==========================================================
+print(" Constructing and training Multi-Variable Linear Regression engine...")
 ai_model = LinearRegression()
-ai_model.fit(x, y)
+ai_model.fit(X, y)
 
-print("\n🎯 Boom! Multi-variable AI model trained successfully on population, year, and GDP relations!")
+# Generate high-fidelity baseline predictions for target verification
+predictions = ai_model.predict(X)
 
-predictions = ai_model.predict(x)
+# Render the production analytics chart
 plt.figure(figsize=(10, 5))
-plt.plot(df_clean['year'], y, label='Actual Data', color='darkcyan', marker='o')
-plt.plot(df_clean['year'], predictions, label='AI Prediction', color='red', linestyle='--', marker='s')
-plt.title('Multi-Variable AI Model: Armenia Energy Consumption Over Time')
-plt.xlabel('Year')
+plt.plot(df_clean['year'], y, label='Actual Historical Data', color='darkcyan', marker='o')
+plt.plot(df_clean['year'], predictions, label='AI Predictive Alignment', color='red', linestyle='--')
+plt.title('Multi-Variable AI Model: Regional Energy Ingestion Analytics')
+plt.xlabel('Timeline (Years)')
 plt.ylabel('Energy Consumption per Capita')
 plt.legend()
-plt.grid(True, linestyle=':')
-plt.tight_layout()
+plt.grid(visible=True, linestyle=':')
+
+# Automatically save the visualization for the secure GitHub asset pipeline
+plt.savefig('multivariable_prediction.png', dpi=300)
+print("📸 Analytics visualization successfully exported as 'multivariable_prediction.png'.")
 plt.show()
 
+
+#  PHASE 3: FUTURE SCENARIO INFERENCE (YEAR 2030)
+# ==========================================================
+print("\n Transitioning AI core into future forecasting matrix...")
+
+future_year = 2030
+estimated_population = 3100000.0  # Projected macro demographic growth
+estimated_gdp = 2.8e+10           # Projected macro economic growth
+
+# Structure the input as a 2D frame for formal inference
+future_scenario = pd.DataFrame([[future_year, estimated_population, estimated_gdp]],
+                               columns=['year', 'population', 'gdp'])
+
+# Run the forecast model
+predicted_energy_2030 = ai_model.predict(future_scenario)
+
+print("=" * 70)
+print(f" [AI Production Forecast 2030]:")
+print(f"   Target Estimated Energy Consumption per Capita: {predicted_energy_2030[0]:.3f}")
+print("=" * 70)
